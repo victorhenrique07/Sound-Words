@@ -1,5 +1,6 @@
 from flask import Flask, request, Response
 from flask_sqlalchemy import SQLAlchemy
+
 import json
 
 app = Flask(__name__)
@@ -44,10 +45,55 @@ class Trap(db.Model):
         return {"ID": self.id, "artist": self.artist, "name": self.name}
 
 
+# HOME
+
 @app.route('/home', methods=["GET"])
 def home():
     return {'hello': 'world'}
 
+
+# POP MUSICS
+
+@app.route('/home/pop', methods=["GET"])
+def get_allPop():
+    try:
+        query_pop = Pop.query.all()
+        pop_json = [pop.to_json() for pop in query_pop]
+
+        return get_response(200, "pop musics", pop_json)
+    except Exception as e:
+        print(e)
+        return get_response(404, "pop musics", {}, "There's no music here yet.")
+
+
+# RAP MUSICS
+
+def get_allRap():
+    try:
+        query_rap = Rap.query.all()
+        pop_json = [pop.to_json() for pop in query_rap]
+
+        return get_response(200, "pop musics", pop_json)
+    except Exception as e:
+        print(e)
+        return get_response(404, "pop musics", {}, "There's no music here yet.")
+
+
+# TRAP MUSICS
+
+@app.route('/home/trap', methods=["GET"])
+def get_allTrap():
+    try:
+        query_trap = Trap.query.all()
+        trap_json = [trap.to_json() for trap in query_trap]
+
+        return get_response(200, "trap musics", trap_json)
+    except Exception as e:
+        print(e)
+        return get_response(404, "trap musics", {}, "There's no music here yet")
+
+
+# POST ARTIST
 
 @app.route('/home/register-artist', methods=["POST"])
 def postArtist():
@@ -63,6 +109,18 @@ def postArtist():
         return get_response(309, "artist", {}, "Artist already exist.")
 
 
+# GET ARTISTS
+
+@app.route('/home/artists', methods=["GET"])
+def get_allArtists():
+    query_artists = Artist.query.all()
+    artists_json = [artists.to_json() for artists in query_artists]
+
+    return get_response(200, "artists", artists_json)
+
+
+# POST MUSIC
+
 @app.route('/home/register-music/genre-<genre>', methods=["POST"])
 def postMusic(genre):
     genre = genre.upper()
@@ -74,58 +132,15 @@ def postMusic(genre):
         return rapMusic()
 
 
-# Retorna todos artistas cadastrados
-@app.route('/home/artists', methods=["GET"])
-def get_allArtists():
-    query_artists = Artist.query.all()
-    artists_json = [artists.to_json() for artists in query_artists]
+# PUT MUSIC
 
-    return get_response(200, "artists", artists_json)
+# DELETE ARTIST
+
+# DELETE MUSIC
 
 
-# Retorna todas as musicas registradas como Pop
-@app.route('/home/pop', methods=["GET"])
-def get_allPop():
-    try:
-        query_pop = Pop.query.all()
-        pop_json = [pop.to_json() for pop in query_pop]
-
-        return get_response(200, "pop musics", pop_json)
-    except Exception as e:
-        print(e)
-        return get_response(404, "pop musics", {}, "There's no music here yet.")
-
-
-# Retorna todas as musicas registradas como Rap
-@app.route('/home/rap', methods=["GET"])
-def get_allRap():
-    try:
-        query_rap = Rap.query.all()
-        rap_json = [rap.to_json() for rap in query_rap]
-
-        return get_response(200, "rap musics", rap_json)
-    except Exception as e:
-        print(e)
-        return get_response(404, "rap musics", {}, "There's no music here yet.")
-
-
-# Retorna todas as musicas registradas como Trap
-@app.route('/home/trap', methods=["GET"])
-def get_allTrap():
-    try:
-        query_trap = Trap.query.all()
-        trap_json = [trap.to_json() for trap in query_trap]
-
-        return get_response(200, "trap musics", trap_json)
-    except Exception as e:
-        print(e)
-        return get_response(404, "trap musics", {}, "There's no music here yet")
-
-
-# Função para registrar musica pop
 def popMusic():
     body = request.get_json()
-
     try:
         pop = Pop(artist=body["artist"], name=body["name"])
         # validating if the artist exists.
@@ -137,15 +152,12 @@ def popMusic():
             db.session.add(pop)
             db.session.commit()
             return get_response(201, "music", pop.to_json(), "Music registered.")
-        return 0
-        # validating if the music already exists.
 
     except Exception as e:
         print(e)
         return get_response(309, "music", {}, "Artist not exist.")
 
 
-# Função para registrar musica rap
 def rapMusic():
     body = request.get_json()
     try:
