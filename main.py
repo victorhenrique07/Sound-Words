@@ -23,7 +23,7 @@ class Pop(db.Model):
     name = db.Column(db.String(30), unique=False, nullable=False)
 
     def to_json(self):
-        return {"ID": self.id, "Artist": self.artist, "Name": self.name}
+        return {"ID": self.id, "artist": self.artist, "name": self.name}
 
 
 class Rap(db.Model):
@@ -32,7 +32,7 @@ class Rap(db.Model):
     name = db.Column(db.String(30), unique=False, nullable=False)
 
     def to_json(self):
-        return {"ID": self.id, "Artist": self.artist, "Name": self.name}
+        return {"ID": self.id, "artist": self.artist, "name": self.name}
 
 
 class Trap(db.Model):
@@ -41,7 +41,7 @@ class Trap(db.Model):
     name = db.Column(db.String(30), unique=False, nullable=False)
 
     def to_json(self):
-        return {"ID": self.id, "Artist": self.artist, "Name": self.name}
+        return {"ID": self.id, "artist": self.artist, "name": self.name}
 
 
 @app.route('/home', methods=["GET"])
@@ -125,20 +125,24 @@ def get_allTrap():
 # Função para registrar musica pop
 def popMusic():
     body = request.get_json()
+
     try:
         pop = Pop(artist=body["artist"], name=body["name"])
         # validating if the artist exists.
-        artists = Artist.query.filter_by(name=body["name"]).one()
-        if pop.artist == artists:
+        artists = Artist.query.filter(Artist.name == body["artist"]).one()
+        pop_music = Pop.query.filter(Pop.name == body["name"]).first()
+        if pop_music and artists:
+            return get_response(309, "music", {}, "Music already exist.")
+        else:
             db.session.add(pop)
             db.session.commit()
             return get_response(201, "music", pop.to_json(), "Music registered.")
-        else:
-            return get_response(309, "artist", {}, "Artist not exist.")
+        return 0
+        # validating if the music already exists.
 
     except Exception as e:
         print(e)
-        return get_response(309, "music", {}, "Music already exist.")
+        return get_response(309, "music", {}, "Artist not exist.")
 
 
 # Função para registrar musica rap
