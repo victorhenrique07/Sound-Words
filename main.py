@@ -24,7 +24,7 @@ class AllMusics(db.Model):
     genre = db.Column(db.String(25), unique=False, nullable=False)
 
     def to_json(self):
-        return {"ID": self.id, "name": self.name, "genre": self.genre}
+        return {"ID": self.id, "artist": self.artist, "name": self.name, "genre": self.genre}
 
 
 class Pop(db.Model):
@@ -183,9 +183,37 @@ def deleteArtist(artist):
 
 
 # DELETE MUSIC
-@app.route('/home/musics/<music>', methods=["GET"])
+@app.route('/home/musics/<music>', methods=["DELETE"])
 def deleteMusic(music):
-    ...
+    music_obj = AllMusics.query.filter_by(name=music).first()
+    trap = Trap.query.filter_by(name=music).first()
+    pop = Pop.query.filter_by(name=music).first()
+    rap = Rap.query.filter_by(name=music).first()
+    try:
+        if music_obj.genre == "Trap":
+            db.session.delete(music_obj)
+            db.session.delete(trap)
+            db.session.commit()
+
+            return get_response(200, "music", music_obj.to_json(), "Music deleted.")
+        elif music_obj.genre.upper() == "POP":
+            db.session.delete(music_obj)
+            db.session.delete(pop)
+            db.session.commit()
+
+            return get_response(200, "music", music_obj.to_json(), "Music deleted.")
+        elif music_obj.genre.upper() == "RAP":
+            db.session.delete(music_obj)
+            db.session.delete(rap)
+            db.session.commit()
+
+            return get_response(200, "music", music_obj.to_json(), "Music deleted.")
+        else:
+
+            return get_response(404, "music", {}, "This music not exist.")
+    except Exception as e:
+        print(e)
+        return get_response(417, "error", {}, "Error to delete.")
 
 
 def popMusic():
