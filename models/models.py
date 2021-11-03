@@ -1,4 +1,4 @@
-from dbengine.dbconfig import db
+from settings import db
 
 
 class Artist(db.Model):

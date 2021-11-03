@@ -5,6 +5,11 @@ __pycache__/
 
 # db config
 dbengine
+dbengine.dbconfig.py
+
+# env
+env
+.env
 
 # C extensions
 *.so

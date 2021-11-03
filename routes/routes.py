@@ -1,8 +1,13 @@
-from main import get_response
-from main import app
 from flask import request
-from dbengine.dbconfig import db
 from models.models import Artist, AllMusics, Pop, Rap, Trap
+from settings import db
+from main import app
+from get_response import get_response
+
+
+@app.route('/', methods=["GET"])
+def home():
+    return {"hello": "world"}
 
 
 @app.route('/home/pop', methods=["GET"])

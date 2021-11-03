@@ -1,6 +1,7 @@
-from flask import request
-from main import get_response
-from dbengine.dbconfig import db
+from flask import request, Response
+from settings import db
+import json
+from get_response import get_response
 from models.models import Rap, AllMusics, Artist
 
 
