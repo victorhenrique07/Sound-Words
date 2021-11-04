@@ -1,6 +1,5 @@
-from flask import request, Response
+from flask import request
 from settings import db
-import json
 from get_response import get_response
 from models.models import Rap, AllMusics, Artist
 
