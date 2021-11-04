@@ -1,7 +1,6 @@
 from flask import request
 from get_response import get_response
-from settings import db
-from models.models import Trap, AllMusics, Artist
+from models.models import *
 
 
 def trapMusic():

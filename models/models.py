@@ -1,4 +1,4 @@
-from settings import db
+from main import db
 
 
 class Artist(db.Model):
