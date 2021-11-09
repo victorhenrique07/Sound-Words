@@ -1,7 +1,6 @@
 from flask import request, Blueprint
-from models.models import Artist, AllMusics, Pop, Rap, Trap
-from get_response import get_response
-from main import db
+from ..models.models import Artist, AllMusics, Pop, Rap, Trap
+from ..get_response import get_response
 
 
 blue_routes = Blueprint('routes', __name__)
@@ -70,8 +69,7 @@ def postArtist():
 
     try:
         artist = Artist(name=body["Name"], genre=body["Genre"])
-        db.session.add(artist)
-        db.session.commit()
+        artist.save()
         return get_response(201, "artist", artist.to_json(), "Artist registered.")
     except Exception as e:
         print(e)
@@ -104,13 +102,13 @@ def get_allMusics():
 def postMusic(genre):
     genre = genre.upper()
     if genre == "TRAP":
-        from music.musictrap import trapMusic
+        from flask_app.music.musictrap import trapMusic
         return trapMusic()
     elif genre == "POP":
-        from music.musicpop import popMusic
+        from flask_app.music.musicpop import popMusic
         return popMusic()
     elif genre == "RAP":
-        from music.musicrap import rapMusic
+        from flask_app.music.musicrap import rapMusic
         return rapMusic()
 
 
@@ -123,9 +121,8 @@ def deleteArtist(artist):
     allmusics = AllMusics.query.filter_by(artist=artist).first()
     try:
         if Artist.query.filter(Artist.name == artist).first():
-            db.session.delete(allmusics)
-            db.session.delete(artist_obj)
-            db.session.commit()
+            artist.delete()
+            allmusics.delete()
             return get_response(200, "artist", artist_obj.to_json(), "Artist deleted.")
         else:
             return get_response(404, "artist", {}, "Artist not exist.")
@@ -143,21 +140,18 @@ def deleteMusic(music):
     rap = Rap.query.filter_by(name=music).first()
     try:
         if music_obj.genre == "Trap":
-            db.session.delete(music_obj)
-            db.session.delete(trap)
-            db.session.commit()
+            music_obj.delete()
+            trap.delete()
 
             return get_response(200, "music", music_obj.to_json(), "Music deleted.")
         elif music_obj.genre.upper() == "POP":
-            db.session.delete(music_obj)
-            db.session.delete(pop)
-            db.session.commit()
+            music_obj.delete()
+            pop.delete()
 
             return get_response(200, "music", music_obj.to_json(), "Music deleted.")
         elif music_obj.genre.upper() == "RAP":
-            db.session.delete(music_obj)
-            db.session.delete(rap)
-            db.session.commit()
+            rap.delete()
+            music_obj.delete()
 
             return get_response(200, "music", music_obj.to_json(), "Music deleted.")
         else:

@@ -1,6 +1,6 @@
 from flask import request
-from get_response import get_response
-from models.models import *
+from flask_app.get_response import get_response
+from flask_app.models.models import *
 
 
 def trapMusic():
@@ -14,9 +14,9 @@ def trapMusic():
         if trap_music and artists:
             return get_response(309, "music", {}, "Music already exist.")
         else:
-            db.session.add(trap)
-            db.session.add(allmusics)
-            db.session.commit()
+            trap.save()
+            allmusics.save()
+
             return get_response(201, "music", trap.to_json(), "Music registered.")
 
     except Exception as e:

@@ -9,7 +9,7 @@ dbengine.dbconfig.py
 
 # env
 env
-.env
+flask_app/.env
 
 # C extensions
 *.so
@@ -110,7 +110,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
+flask_app/.env
 .venv
 env/
 venv/
