@@ -1,0 +1,5 @@
+[default]
+DEBUG = false
+SQLALCHEMY_DATABASE_URI = 'mariadb+pymysql://root:94082@localhost/Sound_Words'
+TITLE = "Sound Words"
+
