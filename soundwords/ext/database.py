@@ -1,6 +1,12 @@
 from flask_sqlalchemy import SQLAlchemy
 
+
 db = SQLAlchemy()
+
+
+def init_app(app):
+    db.init_app(app)
+    app.db = db
 
 
 class BasicMixin(object):
@@ -21,7 +27,3 @@ class Artist(BasicMixin, db.Model):
     def to_json(self):
         return {"ID": self.id, "name": self.name, "genre": self.genre}
 
-
-def init_app(app):
-    db.init_app(app)
-    db.create_all()
