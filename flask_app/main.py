@@ -13,12 +13,13 @@ app.register_blueprint(blue_routes)
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+db.init_app(app)
+
 
 @app.before_first_request
-def create_all():
+def create_database():
     db.create_all()
 
 
 if __name__ == '__main__':
-    db.init_app(app)
     app.run(debug=True)
