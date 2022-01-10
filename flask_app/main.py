@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_app.config import db
-from flask_app.routes.routes import blue_routes
+from flask_app.routes.routes import configure_routes
 from dotenv import dotenv_values
 
 env = dotenv_values(".env")
@@ -9,7 +9,8 @@ DATABASE_URI = env.get("DATABASE_URI")
 
 app = Flask(__name__)
 
-app.register_blueprint(blue_routes)
+configure_routes(app)
+
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 

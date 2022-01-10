@@ -1,6 +1,6 @@
 flask~=2.0.2
 flask-sqlalchemy
-httpx~=0.20.0
+python-dotenv
 
 pip~=21.3
 toml~=0.10.2
