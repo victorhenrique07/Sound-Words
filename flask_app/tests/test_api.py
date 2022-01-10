@@ -1,3 +1,5 @@
+import json
+
 from flask import Flask
 from flask_app.routes.routes import configure_routes
 
@@ -10,4 +12,3 @@ def test_server_is_running():
 
     response = client.get(url)
     assert response.status_code == 200
-    

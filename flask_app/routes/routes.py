@@ -62,7 +62,7 @@ def configure_routes(app):
         body = request.get_json()
 
         try:
-            artist = Artist(name=body["Name"], genre=body["Genre"])
+            artist = Artist(name=body["name"], genre=body["genre"])
             artist.save()
             return get_response(201, "artist", artist.to_json(), "Artist registered.")
         except Exception as e:
