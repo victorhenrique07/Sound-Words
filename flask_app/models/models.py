@@ -1,17 +1,7 @@
 from ..config import db
 
 
-class BasicMixin(object):
-    def save(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
-
-
-class Artist(BasicMixin, db.Model):
+class Artist(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30), unique=True, nullable=False)
     genre = db.Column(db.String(25), unique=False, nullable=False)
@@ -20,7 +10,7 @@ class Artist(BasicMixin, db.Model):
         return {"ID": self.id, "name": self.name, "genre": self.genre}
 
 
-class AllMusics(BasicMixin, db.Model):
+class AllMusics(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30), unique=False, nullable=False)
     artist = db.Column(db.String(30), unique=False, nullable=False)
@@ -30,7 +20,7 @@ class AllMusics(BasicMixin, db.Model):
         return {"ID": self.id, "artist": self.artist, "name": self.name, "genre": self.genre}
 
 
-class Pop(BasicMixin, db.Model):
+class Pop(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     artist = db.Column(db.String(30), unique=False, nullable=False)
     name = db.Column(db.String(30), unique=False, nullable=False)
@@ -39,7 +29,7 @@ class Pop(BasicMixin, db.Model):
         return {"ID": self.id, "artist": self.artist, "name": self.name}
 
 
-class Rap(BasicMixin, db.Model):
+class Rap(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     artist = db.Column(db.String(30), unique=False, nullable=False)
     name = db.Column(db.String(30), unique=False, nullable=False)
@@ -48,7 +38,7 @@ class Rap(BasicMixin, db.Model):
         return {"ID": self.id, "artist": self.artist, "name": self.name}
 
 
-class Trap(BasicMixin, db.Model):
+class Trap(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     artist = db.Column(db.String(30), unique=False, nullable=False)
     name = db.Column(db.String(30), unique=False, nullable=False)

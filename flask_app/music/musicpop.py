@@ -1,6 +1,7 @@
 from flask import request
 from flask_app.get_response import get_response
 from flask_app.models.models import *
+from flask_app.config import db
 
 
 def popMusic():
@@ -14,8 +15,9 @@ def popMusic():
         if pop_music and artists:
             return get_response(309, "music", {}, "Music already exist.")
         else:
-            pop.save()
-            allmusics.save()
+            db.session.add(pop)
+            db.session.add(allmusics)
+            db.session.commit()
 
             return get_response(201, "music", pop.to_json(), "Music registered.")
 
