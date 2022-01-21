@@ -1,6 +1,4 @@
-import json
-
-from flask import Flask
+from flask import Flask, request
 from flask_app.routes.routes import configure_routes
 from dotenv import dotenv_values
 from flask_app.config import db
@@ -111,8 +109,8 @@ def test_if_endpoint_home_register_music_is_posting():
     client = app.test_client()
     url = '/home/register-music/genre-trap'
     data = {
-        'artist': 'Duzz',
-        'name': 'Hayabusa'
+        'artist': 'Eminem',
+        'name': 'Mocking'
     }
 
     response = client.post(url, json=data)
@@ -139,7 +137,8 @@ def test_if_endpoint_home_musics_is_deleting():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.init_app(app)
     client = app.test_client()
-    url = '/home/musics/Superman'
+    url = '/home/musics/Mocking'
 
     response = client.delete(url)
     assert response.status_code == 200
+    
