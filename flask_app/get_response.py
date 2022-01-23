@@ -7,4 +7,7 @@ def get_response(status, resource_name, resource, message=False):
     if message:
         body["message"] = message
 
-    return Response(json.dumps(body), status=status, mimetype="application/json")
+    return Response(
+        json.dumps(body),
+        status=status,
+        mimetype="application/json")

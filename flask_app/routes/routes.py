@@ -2,6 +2,7 @@ from flask import request
 from ..models.models import Artist, AllMusics, Pop, Rap, Trap
 from ..get_response import get_response
 from flask_app.config import db
+import logging
 
 
 def configure_routes(app):
@@ -16,12 +17,18 @@ def configure_routes(app):
             pop_json = [pop.to_json() for pop in query_pop]
 
             if pop_json:
-                return get_response(200, "pop musics", pop_json)
+                return get_response(
+                    200, "pop musics", pop_json
+                )
             else:
-                return get_response(204, "pop musics", {}, "There's no music here yet.")
+                return get_response(
+                    204, "pop musics", {}, "There's no music here yet."
+                )
         except Exception as e:
             print(e)
-            return get_response(417, "error", None, "An error occured.")
+            return get_response(
+                417, "error", None, "An error occured."
+            )
 
     # RAP MUSICS
     @app.route('/home/rap', methods=["GET"])
@@ -32,12 +39,18 @@ def configure_routes(app):
 
             if rap_json:
 
-                return get_response(200, "rap musics", rap_json)
+                return get_response(
+                    200, "rap musics", rap_json
+                )
             else:
-                return get_response(204, "rap musics", {}, "There's no music here yet.")
+                return get_response(
+                    204, "rap musics", {}, "There's no music here yet."
+                )
         except Exception as e:
             print(e)
-            return get_response(417, "rap musics", None, "An error occured")
+            return get_response(
+                417, "rap musics", None, "An error occured"
+            )
 
     # TRAP MUSICS
 
@@ -49,27 +62,40 @@ def configure_routes(app):
 
             if trap_json:
 
-                return get_response(200, "rap musics", trap_json)
+                return get_response(
+                    200, "rap musics", trap_json
+                )
             else:
-                return get_response(204, "rap musics", {}, "There's no music here yet.")
+                return get_response(
+                    204, "rap musics", {}, "There's no music here yet."
+                )
         except Exception as e:
             print(e)
-            return get_response(417, "trap musics", {}, "An error occured")
+            return get_response(
+                417, "trap musics", {}, "An error occured"
+            )
 
     # POST ARTIST
 
     @app.route('/home/register-artist', methods=["POST"])
-    def postArtist():
+    def postArtist() -> str:
         body = request.get_json()
 
         try:
-            artist = Artist(name=body["name"], genre=body["genre"])
+            artist = Artist(
+                name=body["name"], genre=body["genre"]
+            )
             db.session.add(artist)
             db.session.commit()
-            return get_response(201, "artist", artist.to_json(), "Artist registered.")
+            logging.info(artist)
+            return get_response(
+                201, "artist", artist.to_json(), "Artist registered."
+            )
         except Exception as e:
-            print(e)
-            return get_response(309, "artist", {}, "Artist already exist.")
+            logging.info(e)
+            return get_response(
+                309, "artist", {}, "Artist already exist."
+            )
 
     # GET ARTISTS
 
@@ -78,7 +104,9 @@ def configure_routes(app):
         query_artists = Artist.query.all()
         artists_json = [artists.to_json() for artists in query_artists]
 
-        return get_response(200, "artists", artists_json)
+        return get_response(
+            200, "artists", artists_json
+        )
 
     # GET ALL MUSICS
 
@@ -92,7 +120,7 @@ def configure_routes(app):
     # POST MUSIC
 
     @app.route('/home/register-music/genre-<genre>', methods=["POST"])
-    def postMusic(genre):
+    def postMusic(genre: str) -> str:
         genre = genre.upper()
         if genre == "TRAP":
             from flask_app.music.musictrap import trapMusic
@@ -108,33 +136,43 @@ def configure_routes(app):
 
     # DELETE ARTIST
     @app.route('/home/artists/<artist>', methods=["DELETE"])
-    def delete_artist(artist):
+    def delete_artist(artist: str):
         artist_obj = Artist.query.filter_by(name=artist).first()
         allmusics = AllMusics.query.filter_by(artist=artist).first()
         try:
             if artist_obj:
                 db.session.delete(artist_obj)
                 db.session.commit()
-                return get_response(200, "artist", artist_obj.to_json(), "Artist deleted.")
+                return get_response(
+                    200, "artist", artist_obj.to_json(), "Artist deleted."
+                )
             elif allmusics:
                 db.session.delete(allmusics)
                 db.session.commit()
-                return get_response(200, "artist", artist_obj.to_json(), "Artist deleted.")
+                return get_response(
+                    200, "artist", artist_obj.to_json(), "Artist deleted."
+                )
             elif artist_obj and allmusics:
                 db.session.delete(allmusics)
                 db.session.delete(artist_obj)
                 db.session.commit()
-                return get_response(200, "artist", artist_obj.to_json(), "Artist deleted.")
+                return get_response(
+                    200, "artist", artist_obj.to_json(), "Artist deleted."
+                )
 
             else:
-                return get_response(404, "artist", {}, "Artist not exist.")
+                return get_response(
+                    404, "artist", {}, "Artist not exist."
+                )
         except Exception as e:
             print(e)
-            return get_response(404, "artist", {}, "An error occured")
+            return get_response(
+                404, "artist", {}, "An error occured"
+            )
 
     # DELETE MUSIC
     @app.route('/home/musics/<music>', methods=["DELETE"])
-    def delete_music(music):
+    def delete_music(music: str):
         music_obj = AllMusics.query.filter_by(name=music).first()
         trap = Trap.query.filter_by(name=music).first()
         pop = Pop.query.filter_by(name=music).first()
@@ -145,22 +183,32 @@ def configure_routes(app):
                 db.session.delete(music_obj)
                 db.session.commit()
 
-                return get_response(200, "music", music_obj.to_json(), "Music deleted.")
+                return get_response(
+                    200, "music", music_obj.to_json(), "Music deleted."
+                )
             elif music_obj.genre.upper() == "POP":
                 db.session.delete(pop)
                 db.session.delete(music_obj)
                 db.session.commit()
 
-                return get_response(200, "music", music_obj.to_json(), "Music deleted.")
+                return get_response(
+                    200, "music", music_obj.to_json(), "Music deleted."
+                )
             elif music_obj.genre.upper() == "RAP":
                 db.session.delete(rap)
                 db.session.delete(music_obj)
                 db.session.commit()
 
-                return get_response(200, "music", music_obj.to_json(), "Music deleted.")
+                return get_response(
+                    200, "music", music_obj.to_json(), "Music deleted."
+                )
             else:
 
-                return get_response(404, "music", {}, "This music not exist.")
+                return get_response(
+                    404, "music", {}, "This music not exist."
+                )
         except Exception as e:
             print(e)
-            return get_response(417, "error", {}, "Error to delete.")
+            return get_response(
+                417, "error", {}, "Error to delete."
+            )

@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask
 from flask_app.routes.routes import configure_routes
 from dotenv import dotenv_values
 from flask_app.config import db
@@ -141,4 +141,3 @@ def test_if_endpoint_home_musics_is_deleting():
 
     response = client.delete(url)
     assert response.status_code == 200
-    

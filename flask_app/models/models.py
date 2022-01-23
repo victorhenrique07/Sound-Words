@@ -7,7 +7,9 @@ class Artist(db.Model):
     genre = db.Column(db.String(25), unique=False, nullable=False)
 
     def to_json(self):
-        return {"ID": self.id, "name": self.name, "genre": self.genre}
+        return {"ID": self.id,
+                "name": self.name,
+                "genre": self.genre}
 
 
 class AllMusics(db.Model):
@@ -17,7 +19,10 @@ class AllMusics(db.Model):
     genre = db.Column(db.String(25), unique=False, nullable=False)
 
     def to_json(self):
-        return {"ID": self.id, "artist": self.artist, "name": self.name, "genre": self.genre}
+        return {"ID": self.id,
+                "artist": self.artist,
+                "name": self.name,
+                "genre": self.genre}
 
 
 class Pop(db.Model):
@@ -26,7 +31,9 @@ class Pop(db.Model):
     name = db.Column(db.String(30), unique=False, nullable=False)
 
     def to_json(self):
-        return {"ID": self.id, "artist": self.artist, "name": self.name}
+        return {"ID": self.id,
+                "artist": self.artist,
+                "name": self.name}
 
 
 class Rap(db.Model):
@@ -35,7 +42,9 @@ class Rap(db.Model):
     name = db.Column(db.String(30), unique=False, nullable=False)
 
     def to_json(self):
-        return {"ID": self.id, "artist": self.artist, "name": self.name}
+        return {"ID": self.id,
+                "artist": self.artist,
+                "name": self.name}
 
 
 class Trap(db.Model):
@@ -44,4 +53,6 @@ class Trap(db.Model):
     name = db.Column(db.String(30), unique=False, nullable=False)
 
     def to_json(self):
-        return {"ID": self.id, "artist": self.artist, "name": self.name}
+        return {"ID": self.id,
+                "artist": self.artist,
+                "name": self.name}
