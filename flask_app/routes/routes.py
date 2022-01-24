@@ -1,6 +1,6 @@
 from flask import request
-from ..models.models import Artist, AllMusics, Pop, Rap, Trap
-from ..get_response import get_response
+from flask_app.models.models import Artist, AllMusics, Pop, Rap, Trap
+from flask_app.get_response import get_response
 from flask_app.config import db
 import logging
 
@@ -25,7 +25,7 @@ def configure_routes(app):
                     204, "pop musics", {}, "There's no music here yet."
                 )
         except Exception as e:
-            print(e)
+            logging.error(e)
             return get_response(
                 417, "error", None, "An error occured."
             )
@@ -47,7 +47,7 @@ def configure_routes(app):
                     204, "rap musics", {}, "There's no music here yet."
                 )
         except Exception as e:
-            print(e)
+            logging.error(e)
             return get_response(
                 417, "rap musics", None, "An error occured"
             )
@@ -70,7 +70,7 @@ def configure_routes(app):
                     204, "rap musics", {}, "There's no music here yet."
                 )
         except Exception as e:
-            print(e)
+            logging.error(e)
             return get_response(
                 417, "trap musics", {}, "An error occured"
             )
@@ -87,12 +87,11 @@ def configure_routes(app):
             )
             db.session.add(artist)
             db.session.commit()
-            logging.info(artist)
             return get_response(
                 201, "artist", artist.to_json(), "Artist registered."
             )
         except Exception as e:
-            logging.info(e)
+            logging.error(e)
             return get_response(
                 309, "artist", {}, "Artist already exist."
             )
@@ -165,7 +164,7 @@ def configure_routes(app):
                     404, "artist", {}, "Artist not exist."
                 )
         except Exception as e:
-            print(e)
+            logging.error(e)
             return get_response(
                 404, "artist", {}, "An error occured"
             )
@@ -208,7 +207,44 @@ def configure_routes(app):
                     404, "music", {}, "This music not exist."
                 )
         except Exception as e:
-            print(e)
+            logging.error(e)
             return get_response(
                 417, "error", {}, "Error to delete."
             )
+
+    @app.route('/home/edit/<music_or_artist>/<ID>', methods=["PUT"])
+    def edit_music_or_artist(music_or_artist, ID):
+        all_musics = AllMusics.query.filter_by(id=ID).first()
+        body = request.get_json()
+        if music_or_artist.upper() == "MUSIC":
+            try:
+                if 'name' and 'artist' and 'genre' in body:
+                    all_musics.name = body["name"]
+                    all_musics.artist = body["artist"]
+                    all_musics.genre = body["genre"]
+                    db.session.add(all_musics)
+                    db.session.commit()
+
+                    return get_response(
+                        200, "music", all_musics.to_json(), "Music edited"
+                    )
+            except Exception as e:
+                logging.error(e)
+                return get_response(
+                    409, "error", {}, "Same credentials."
+                )
+        elif music_or_artist.upper() == "ARTIST":
+            try:
+                if 'name' and 'genre' in body:
+                    artist = Artist.query.filter_by(id=ID).first()
+                    artist.name = body["name"]
+                    artist.genre = body["genre"]
+                    db.session.add(artist)
+                    db.session.commit()
+                else:
+                    return {"error": "name, genre or artist is missing."}
+            except Exception as e:
+                logging.error(e)
+                return get_response(
+                    417, "error", {}, "Error to edit it."
+                )

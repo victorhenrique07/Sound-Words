@@ -2,6 +2,7 @@ from flask import request
 from flask_app.get_response import get_response
 from flask_app.models.models import Trap, AllMusics
 from flask_app.config import db
+import logging
 
 
 def trapMusic():
@@ -29,7 +30,7 @@ def trapMusic():
             )
 
     except Exception as e:
-        print(e)
+        logging.error(e)
         return get_response(
             417, "music", {}, "Artist not exist."
         )

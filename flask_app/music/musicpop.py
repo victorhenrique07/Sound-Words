@@ -2,6 +2,7 @@ from flask import request
 from flask_app.get_response import get_response
 from flask_app.models.models import Pop, AllMusics
 from flask_app.config import db
+import logging
 
 
 def popMusic():
@@ -32,7 +33,7 @@ def popMusic():
             )
 
     except Exception as e:
-        print(e)
+        logging.error(e)
         return get_response(
             309, "music", {}, "Artist not exist."
         )

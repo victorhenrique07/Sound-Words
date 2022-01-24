@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from flask_app.routes.routes import configure_routes
 from dotenv import dotenv_values
 from flask_app.config import db
