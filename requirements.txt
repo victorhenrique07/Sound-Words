@@ -1,6 +1,7 @@
 flask~=2.0.2
 flask-sqlalchemy
 python-dotenv
+gunicorn
 
 pip~=21.3
 toml~=0.10.2
