@@ -12,6 +12,9 @@ env
 .env
 venv
 
+# directories
+tests
+
 # C extensions
 *.so
 
