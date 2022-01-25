@@ -1,11 +1,9 @@
 from flask import Flask
 from flask_app.config import db
 from flask_app.routes.routes import configure_routes
-from dotenv import dotenv_values
+import os
 
-env = dotenv_values(".env")
-
-DATABASE_URI = env.get("DATABASE_URI")
+DATABASE_URI = os.getenv("DATABASE_URI")
 
 app = Flask(__name__)
 
@@ -17,10 +15,6 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
 
 
-@app.before_first_request
-def create_database():
-    db.create_all()
-
-
 if __name__ == '__main__':
-    app.run(debug=True)
+    db.create_all()
+    app.run(debug=False)
