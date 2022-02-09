@@ -1,0 +1,235 @@
+openapi: 3.0.3
+
+info: # Informações sobre a API
+  title: Sound Words
+  version: 1.0.0
+
+servers:
+  - url: https://soundwords.herokuapp.com
+
+components:
+  parameters:
+    Artist:
+      in: path
+      name: artist
+      required: true
+      schema:
+        type: string
+
+    Music:
+      in: path
+      name: artist
+      required: true
+      schema:
+        type: string
+
+    Music_ir_Artist:
+      in: path
+      name: music_or_artist
+      required: true
+      schema:
+        type: string
+    ID:
+      in: path
+      name: ID
+      required: true
+      schema:
+        type: integer
+
+  schemas:
+    Artista:
+      type: object
+      required:
+        - name
+        - genre
+      properties:
+        name:
+          type: string
+        genre:
+          type: string
+    Artistas:
+      type: object
+      properties:
+        artistas:
+          type: array
+          items:
+            $ref: '#/components/schemas/Artista'
+
+    Musica:
+      type: object
+      required:
+        - artist
+        - name
+        - genre
+      properties:
+        artist:
+          type: string
+        name:
+          type: string
+        genre:
+          type: string
+    Musicas:
+      type: object
+      properties:
+        musicas:
+          type: array
+          items:
+            $ref: '#/components/schemas/Musica'
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+
+paths:
+  /home/register-music/genre-<genre>:
+    post:
+      summary: Cadastra uma música
+      description: Cadastra uma música na tabela especificada no endpoint
+      parameters:
+        - name: Musica
+          in: body
+          required: True
+          schema:
+            $ref: '#/components/schemas/Musica'
+      responses:
+        201:
+          description: Música cadastrada!
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Musica'
+              examples:
+                user:
+                  summary: User Example
+                  externalValue: 'https://foo.bar/examples/user-example.json'
+        409:
+          description: Retorna status code 409 se o artista não existe.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /home/register-artist:
+    post:
+      summary: Cadastra um artista
+      description: Cadastra um artista no banco de dados e retorna um erro, caso o artista já exista.
+      parameters:
+        - name: Artista
+          in: body
+          required: True
+          schema:
+            $ref: '#/components/schemas/Artista'
+      response:
+        201:
+          description: Retorna status code 201 se a música foi cadastrada com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Artista'
+              examples:
+                user:
+                  summary: User example
+                  externalValue: 'https://foo.bar/examples/user-example.json'
+        409:
+          description: Retorna status code 409 se o artista da música ainda não foi cadastrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /home/trap:
+    get:
+      summary: Retorna todas músicas Trap
+      description: Retorna para o usuário todas as músicas registradas como Trap
+      responses:
+        200:
+          description: Retorna status code 200 se retornou todas as músicas Trap
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Musicas'
+
+  /home/rap:
+    get:
+      summary: Retorna todas músicas Rap
+      description: Retorna para o usuário todas as músicas registradas como Rap
+      responses:
+        200:
+          description: Retorna status code 200 se retornou todas as músicas Rap
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Musicas'
+
+  /home/pop:
+    get:
+      summary: Retorna todas músicas pop
+      description: Retorna para o usuário todas as músicas registradas como Pop
+      responses:
+        200:
+          description: Retorna status code 200 se retornou todas as músicas Pop
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Musicas'
+
+  /home/artists:
+    get:
+      summary: Retorna todos artistas
+      description: Retorna para o usuário todos os artistas registrados
+      responses:
+        200:
+          description: Retorna status code 200 se retornou todos os artistas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Artistas'
+
+  /home/musics:
+    get:
+      summary: Retorna todas músicas
+      description: Retorna para o usuário todas músicas registradas.
+      responses:
+        200:
+          description: Retorna status code 200 se retornou todas músicas.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Musicas'
+
+  /home/edit/<music_or_artist>/{ID}:
+    parameters:
+      - $ref: '#/components/parameters/ID'
+    put:
+      description: Edita as informações do objeto
+      responses:
+        200:
+          description: Retorna 200 se o ID existe.
+
+        404:
+          description: Retorna 404 se o ID não existe.
+
+  /home/musics/<music>:
+    parameters:
+      - $ref: '#/components/parameters/Music'
+    delete:
+      description: Deleta uma musica
+      responses:
+        200:
+          description: Retorna 200 se a música existe.
+
+        404:
+          description: Retorna 404 se a música não existe.
+
+  /home/artists/<artist>:
+    parameters:
+      - $ref: '#/components/parameters/Artist'
+    delete:
+      description: Deleta um artista
+      responses:
+        200:
+          description: Retorna 200 se o artista existe.
+
+        404:
+          description: Retorna 404 se o artista não existe.
